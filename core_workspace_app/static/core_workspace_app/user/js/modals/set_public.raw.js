@@ -1,0 +1,1 @@
+var publicWorkspaceUrl = "{% url 'core_workspace_public_workspace' %}";

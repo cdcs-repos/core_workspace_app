@@ -1,13 +1,15 @@
 """
 Workspace API
 """
-
+from core_main_app.utils.access_control.decorators import access_control
+from core_main_app.commons.exceptions import NotUniqueError
 from core_main_app.components.group import api as group_api
 from core_workspace_app.components.workspace.models import Workspace
 from core_workspace_app.permissions import api as permission_api
+from core_workspace_app.components.workspace.access_control import can_delete_workspace
 
 
-def create_and_save(owner_id, title="Default workspace"):
+def create_and_save(owner_id, title):
     """ Create and save a workspace. It will also create permissions.
 
     Args:
@@ -17,6 +19,9 @@ def create_and_save(owner_id, title="Default workspace"):
     Returns:
     """
 
+    if Workspace.check_if_workspace_already_exists(title):
+        raise NotUniqueError('A workspace with the same title already exists.')
+
     workspace = Workspace(title=title,
                           owner=str(owner_id),
                           read_perm_id=str(permission_api.create_read_perm(title).id),
@@ -25,7 +30,8 @@ def create_and_save(owner_id, title="Default workspace"):
     return workspace.save()
 
 
-def delete(workspace):
+@access_control(can_delete_workspace)
+def delete(workspace, user):
     """ Delete a workspace and its permissions.
 
     Args:
@@ -83,6 +89,20 @@ def get_by_id(workspace_id):
 
     """
     return Workspace.get_by_id(workspace_id)
+
+
+def get_by_id_list(list_workspace_id):
+    """ Return a list of workspaces with the given id list.
+
+    Args:
+        list_workspace_id
+
+    Returns:
+    """
+    list_workspace = []
+    for workspace_id in list_workspace_id:
+        list_workspace.append(Workspace.get_by_id(workspace_id))
+    return list_workspace
 
 
 def get_all_workspaces_with_read_access_by_user(user):

@@ -20,6 +20,17 @@ class Workspace(Document):
     write_perm_id = fields.StringField(blank=False)
 
     @staticmethod
+    def check_if_workspace_already_exists(title):
+        """ Check if a workspace with the same title exists (case insensitive).
+
+        Args:
+            title
+
+        Returns:
+        """
+        return Workspace.objects.filter(title__iexact=title).exists()
+
+    @staticmethod
     def get_all():
         """ Get all workspaces.
 

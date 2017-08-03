@@ -1,0 +1,1 @@
+var createWorkspaceUrl = "{% url 'core_workspace_create_workspace' %}";
