@@ -17,6 +17,9 @@ def can_write_data_workspace(func, data, workspace, user):
     Returns:
 
     """
+    if user.is_superuser:
+        return func(data, workspace, user)
+
     _check_can_write_data(data, user)
     _check_can_write_workspace(workspace, user)
     return func(data, workspace, user)
