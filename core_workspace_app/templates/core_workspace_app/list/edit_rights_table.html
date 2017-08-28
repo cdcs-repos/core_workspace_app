@@ -1,0 +1,32 @@
+<table id="table-rights-{{group}}" class="display data-table" style="margin-bottom: 0em; width:100%; border: None">
+    <thead>
+        <th>Username</th>
+        <th>Can read</th>
+        <th>Can write</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        {% for object in objects %}
+            <tr objectid="{{object.user.id}}">
+                <td>{{ object.user.username }}</td>
+                <td>
+                    <label class="switch">
+                        <input id="btn-read" type="checkbox" {% if object.can_read %} checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </td>
+                <td>
+                    <label class="switch">
+                        <input id="btn-write" type="checkbox" {% if object.can_write %} checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </td>
+                <td>
+                    <a class="btn btn-default remove-{{group}}-btn">
+                        <i class="fa fa-edit"></i> Remove {{group}} access
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

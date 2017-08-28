@@ -15,12 +15,12 @@ load_form_change_workspace = function() {
             document_id: getSelectedDocument()
         },
 		success: function(data){
-            $("#banner_errors").hide();
+            $("#banner_edit_errors").hide();
             $("#assign-workspace-form").html(data.form);
 	    },
         error:function(data){
             $("#assign_workspace_errors").html(data.responseText);
-            $("#banner_errors").show(500)
+            $("#banner_edit_errors").show(500)
         }
     });
 };
@@ -40,7 +40,7 @@ $.ajax({
 	    },
         error:function(data){
             $("#assign_workspace_errors").html(data.responseText);
-            $("#banner_errors").show(500)
+            $("#banner_edit_errors").show(500)
         }
     });
 };

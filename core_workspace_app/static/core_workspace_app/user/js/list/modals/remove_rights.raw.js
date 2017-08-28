@@ -1,0 +1,1 @@
+var removeRightsUrl = "{% url 'core_workspace_remove_rights' %}";

@@ -1,12 +1,14 @@
 """
 Workspace API
 """
-from core_main_app.utils.access_control.decorators import access_control
 from core_main_app.commons.exceptions import NotUniqueError
 from core_main_app.components.group import api as group_api
+from core_main_app.components.user import api as user_api
+from core_main_app.utils.access_control.decorators import access_control
+from core_workspace_app.components.workspace.access_control import can_delete_workspace, is_workspace_owner, \
+    is_workspace_owner_to_perform_action_for_others
 from core_workspace_app.components.workspace.models import Workspace
 from core_workspace_app.permissions import api as permission_api
-from core_workspace_app.components.workspace.access_control import can_delete_workspace
 
 
 def create_and_save(owner_id, title):
@@ -242,3 +244,95 @@ def can_user_write_workspace(workspace, user):
     """
     permission_label = permission_api.get_permission_label(workspace.write_perm_id)
     return str(workspace.owner) == str(user.id) or user.has_perm(permission_label)
+
+
+@access_control(is_workspace_owner)
+def get_list_user_can_access_workspace(workspace, user):
+    """ Get the list of users that have either read or write access to workspace.
+
+    Args:
+        workspace
+        user
+
+    Returns:
+    """
+
+    # Get read permission of the workspace
+    read_permission = permission_api.get_by_id(workspace.read_perm_id)
+
+    # Get write permission of the workspace
+    write_permission = permission_api.get_by_id(workspace.write_perm_id)
+
+    # List all users that have the read permission of the workspace
+    all_users_read = list(read_permission.user_set.all())
+
+    # List all users that have the write permission of the workspace
+    all_users_write = list(write_permission.user_set.all())
+
+    # Return the union without doublons of the two lists.
+    return list(set(all_users_read + all_users_write))
+
+
+@access_control(is_workspace_owner)
+def get_list_user_with_no_access_workspace(workspace, user):
+    """ Get list of users that don't have any access to the workspace.
+
+    Args:
+         workspace
+         user
+
+    Returns:
+    """
+    return user_api.get_all_users_except_list(get_list_user_can_access_workspace(workspace, user))
+
+
+@access_control(is_workspace_owner_to_perform_action_for_others)
+def add_user_read_access_to_workspace(workspace, new_user, user):
+    """ Add to new user the read access to workspace.
+
+    Args:
+          workspace
+          new_user
+          user
+    Returns:
+    """
+    permission_api.add_permission_to_user(new_user, workspace.read_perm_id)
+
+
+@access_control(is_workspace_owner_to_perform_action_for_others)
+def add_user_write_access_to_workspace(workspace, new_user, user):
+    """ Add to new user the write access to workspace.
+
+    Args:
+          workspace
+          new_user
+          user
+    Returns:
+    """
+    permission_api.add_permission_to_user(new_user, workspace.write_perm_id)
+
+
+@access_control(is_workspace_owner_to_perform_action_for_others)
+def remove_user_read_access_to_workspace(workspace, new_user, user):
+    """ Remove to new user the read access to workspace.
+
+    Args:
+          workspace
+          new_user
+          user
+    Returns:
+    """
+    permission_api.remove_permission_to_user(new_user, workspace.read_perm_id)
+
+
+@access_control(is_workspace_owner_to_perform_action_for_others)
+def remove_user_write_access_to_workspace(workspace, new_user, user):
+    """ Remove to new user the write access to workspace.
+
+    Args:
+          workspace
+          new_user
+          user
+    Returns:
+    """
+    permission_api.remove_permission_to_user(new_user, workspace.write_perm_id)

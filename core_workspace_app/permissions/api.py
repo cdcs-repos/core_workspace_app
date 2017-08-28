@@ -81,7 +81,7 @@ def _create_perm(name, content_type, codename):
     return perm
 
 
-def add_permission_to_user(user_id, permission_id):
+def add_permission_to_user(user, permission_id):
     """ Add permission to user.
 
     Args:
@@ -91,7 +91,6 @@ def add_permission_to_user(user_id, permission_id):
     Returns:
     """
     permission = Permission.objects.get(pk=permission_id)
-    user = user_api.get_user_by_id(str(user_id))
     user.user_permissions.add(permission)
     user.save()
 
@@ -111,16 +110,15 @@ def add_permission_to_group(group_id, permission_id):
     group.save()
 
 
-def remove_permission_to_user(user_id, perm):
+def remove_permission_to_user(user, perm):
     """ Remove permission from user.
 
     Args:
-        user_id
+        user
         perm
 
     Returns:
     """
-    user = user_api.get_user_by_id(user_id)
     user.user_permissions.remove(perm)
     user.save()
 

@@ -7,6 +7,28 @@ from core_main_app.commons.exceptions import DoesNotExist
 from core_workspace_app.components.workspace import api as workspace_api
 
 
+class UserRightForm(forms.Form):
+    """
+    Form to select user to add rights.
+    """
+    users = forms.MultipleChoiceField(label='', required=True, widget=forms.SelectMultiple(attrs={'class': 'right-form'}))
+    USERS_OPTIONS = []
+
+    def __init__(self, users_with_no_access):
+        self.USERS_OPTIONS = []
+
+        # We sort by username, case sensitive
+        sort_users = sorted(users_with_no_access, key=lambda s: s.username.lower())
+
+        # We add them
+        for user in sort_users:
+            self.USERS_OPTIONS.append((user.id, user.username))
+
+        super(UserRightForm, self).__init__()
+        self.fields['users'].choices = []
+        self.fields['users'].choices = self.USERS_OPTIONS
+
+
 class WorkspaceForm(forms.Form):
     """
     Form to create the workspace.
