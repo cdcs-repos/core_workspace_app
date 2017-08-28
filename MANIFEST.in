@@ -1,2 +1,4 @@
 include README.md
 include requirements.txt
+recursive-include core_workspace_app/static *
+recursive-include core_workspace_app/templates *
