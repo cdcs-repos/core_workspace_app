@@ -8,7 +8,7 @@ if ( ! $.fn.dataTable.isDataTable( '#table-rights-user' ) ) {
             {"className": "dt-center", "targets": 0}
         ],
         order: [[0, 'asc']],
-        "columns": [ null, null, null, { "orderable": false } ]
+        "columns": [ null, { "orderable": false }, { "orderable": false }, { "orderable": false } ]
     });
 }
 
@@ -22,6 +22,6 @@ if ( ! $.fn.dataTable.isDataTable( '#table-rights-group' ) ) {
             {"className": "dt-center", "targets": 0}
         ],
         order: [[0, 'asc']],
-        "columns": [ null, null, null, { "orderable": false } ]
+        "columns": [ null, { "orderable": false }, { "orderable": false }, { "orderable": false } ]
     });
 }

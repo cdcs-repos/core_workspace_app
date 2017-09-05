@@ -8,33 +8,29 @@
 <a class="btn btn-default add-user-btn">
     <i class="fa fa-file-text-o"></i> Add users
 </a>
+<a class="btn btn-default add-group-btn">
+    <i class="fa fa-file-text-o"></i> Add groups
+</a>
 {% endblock %}
 
 {% block box_body %}
-
-<ul  class="nav nav-tabs">
-    <li class="active"> <a href="#users" data-toggle="tab" style="text-decoration:none;">Users</a> </li>
-    <li><a href="#groups" data-toggle="tab" style="text-decoration:none;">Groups</a> </li>
-</ul>
 <br/>
-<div class="tab-content">
-  <div class="tab-pane active" id="users" style="width:98%">
+    <!--FIXME: put back the tab -->
     {% if data.user_data %}
-        {% include data.template with objects=data.user_data group='user' %}
+        Users
+        {% include data.template with objects=data.user_data group=data.user %}
     {% else %}
     <div class="empty-table">
         No users have access to '{{ data.workspace.title }}'.
     </div>
     {% endif %}
-  </div>
-  <div class="tab-pane" id="groups" style="width:98%">
-    {% if data.group_data%}
-        {% include data.template with objects=data.group_data group='group' %}
+<br/>
+    {% if data.group_data %}
+        Groups
+        {% include data.template with objects=data.group_data group=data.group %}
     {%else%}
       <div class="empty-table">
         No groups have access to '{{ data.workspace.title }}'.
       </div>
     {%endif%}
-  </div>
-</div>
 {% endblock %}

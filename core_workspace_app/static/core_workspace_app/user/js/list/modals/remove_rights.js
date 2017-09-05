@@ -1,24 +1,34 @@
 /**
  * Remove rights
  */
-removeRights = function() {
+removeRightsUser = function() {
     $("#remove_rights_banner_errors").hide();
     var $recordRow = $(this).parent().parent();
     $('.remove-rights-id').val($recordRow.attr("objectid"));
+    $('.remove-rights-group-or-user').val(user);
+    $("#remove-rights-modal").modal("show");
+};
+
+removeRightsGroup = function() {
+    $("#remove_rights_banner_errors").hide();
+    var $recordRow = $(this).parent().parent();
+    $('.remove-rights-id').val($recordRow.attr("objectid"));
+    $('.remove-rights-group-or-user').val(group);
     $("#remove-rights-modal").modal("show");
 };
 
 /**
  * AJAX call, remove rights
  */
-remove_rights = function() {
+remove_rights = function(type) {
     $.ajax({
         url : removeRightsUrl,
         type : "POST",
         dataType: "json",
         data : {
             workspace_id: workspace_id,
-            user_id: $('.remove-rights-id').val()
+            object_id: $('.remove-rights-id').val(),
+            group_or_user: $('.remove-rights-group-or-user').val()
         },
 		success: function(data){
 			location.reload();
@@ -30,5 +40,6 @@ remove_rights = function() {
     });
 };
 
-$('.remove-user-btn').on('click', removeRights);
-$('#remove-user-yes').on('click', remove_rights);
+$('.remove-user-btn').on('click', removeRightsUser);
+$('.remove-group-btn').on('click', removeRightsGroup);
+$('#remove-yes').on('click', remove_rights);

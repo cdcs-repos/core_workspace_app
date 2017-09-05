@@ -246,7 +246,60 @@ def can_user_write_workspace(workspace, user):
     return str(workspace.owner) == str(user.id) or user.has_perm(permission_label)
 
 
+def can_group_read_workspace(workspace, group):
+    """ Check if group has read permission on workspace.
+
+    Args:
+        workspace
+        group
+
+    Return:
+    """
+    permission = permission_api.get_by_id(workspace.read_perm_id)
+    return permission_api.check_if_group_has_perm(group, permission)
+
+
+def can_group_write_workspace(workspace, group):
+    """ Check if group has write permission on workspace.
+
+    Args:
+        workspace
+        group
+
+    Return:
+    """
+    permission = permission_api.get_by_id(workspace.write_perm_id)
+    return permission_api.check_if_group_has_perm(group, permission)
+
+
 @access_control(is_workspace_owner)
+def get_list_user_can_write_workspace(workspace, user):
+    """ Get list of users that have write access to workspace.
+
+    Args:
+        workspace
+        user
+    """
+    # Get write permission of the workspace
+    write_permission = permission_api.get_by_id(workspace.write_perm_id)
+
+    return list(write_permission.user_set.all())
+
+
+@access_control(is_workspace_owner)
+def get_list_user_can_read_workspace(workspace, user):
+    """  Get list of users that have read access to workspace.
+
+    Args:
+        workspace
+        user
+    """
+    # Get read permission of the workspace
+    read_permission = permission_api.get_by_id(workspace.read_perm_id)
+
+    return list(read_permission.user_set.all())
+
+
 def get_list_user_can_access_workspace(workspace, user):
     """ Get the list of users that have either read or write access to workspace.
 
@@ -257,17 +310,11 @@ def get_list_user_can_access_workspace(workspace, user):
     Returns:
     """
 
-    # Get read permission of the workspace
-    read_permission = permission_api.get_by_id(workspace.read_perm_id)
-
-    # Get write permission of the workspace
-    write_permission = permission_api.get_by_id(workspace.write_perm_id)
-
     # List all users that have the read permission of the workspace
-    all_users_read = list(read_permission.user_set.all())
+    all_users_read = get_list_user_can_read_workspace(workspace, user)
 
     # List all users that have the write permission of the workspace
-    all_users_write = list(write_permission.user_set.all())
+    all_users_write = get_list_user_can_write_workspace(workspace, user)
 
     # Return the union without doublons of the two lists.
     return list(set(all_users_read + all_users_write))
@@ -336,3 +383,120 @@ def remove_user_write_access_to_workspace(workspace, new_user, user):
     Returns:
     """
     permission_api.remove_permission_to_user(new_user, workspace.write_perm_id)
+
+
+@access_control(is_workspace_owner)
+def get_list_group_can_write_workspace(workspace, user):
+    """ Get the list of groups that have write access to workspace.
+
+    Args:
+        workspace
+        user
+
+    Returns:
+    """
+    # Get write permission of the workspace
+    write_permission = permission_api.get_by_id(workspace.write_perm_id)
+
+    return list(write_permission.group_set.all())
+
+
+@access_control(is_workspace_owner)
+def get_list_group_can_read_workspace(workspace, user):
+    """ Get the list of groups that have read access to workspace.
+
+    Args:
+        workspace
+        user
+
+    Returns:
+    """
+    # Get read permission of the workspace
+    read_permission = permission_api.get_by_id(workspace.read_perm_id)
+
+    return list(read_permission.group_set.all())
+
+
+def get_list_group_can_access_workspace(workspace, user):
+    """ Get the list of groups that have either read or write access to workspace.
+
+    Args:
+        workspace
+        user
+
+    Returns:
+    """
+
+    # List all groups that have the read permission of the workspace
+    all_groups_read = get_list_group_can_read_workspace(workspace, user)
+
+    # List all groups that have the write permission of the workspace
+    all_groups_write = get_list_group_can_write_workspace(workspace, user)
+
+    # Return the union without doublons of the two lists.
+    return list(set(all_groups_read + all_groups_write))
+
+
+@access_control(is_workspace_owner)
+def get_list_group_with_no_access_workspace(workspace, user):
+    """ Get list of groups that don't have any access to the workspace.
+
+    Args:
+         workspace
+         user
+
+    Returns:
+    """
+    return group_api.get_all_groups_except_list(get_list_group_can_access_workspace(workspace, user))
+
+
+@access_control(is_workspace_owner_to_perform_action_for_others)
+def add_group_read_access_to_workspace(workspace, new_group, user):
+    """ Add to new group the read access to workspace.
+
+    Args:
+          workspace
+          new_group
+          user
+    Returns:
+    """
+    permission_api.add_permission_to_group(new_group, workspace.read_perm_id)
+
+
+@access_control(is_workspace_owner_to_perform_action_for_others)
+def add_group_write_access_to_workspace(workspace, new_group, user):
+    """ Add to new group the write access to workspace.
+
+    Args:
+          workspace
+          new_group
+          user
+    Returns:
+    """
+    permission_api.add_permission_to_group(new_group, workspace.write_perm_id)
+
+
+@access_control(is_workspace_owner_to_perform_action_for_others)
+def remove_group_read_access_to_workspace(workspace, group, user):
+    """ Remove to new group the read access to workspace.
+
+    Args:
+          workspace
+          group
+          user
+    Returns:
+    """
+    permission_api.remove_permission_to_group(group, workspace.read_perm_id)
+
+
+@access_control(is_workspace_owner_to_perform_action_for_others)
+def remove_group_write_access_to_workspace(workspace, group, user):
+    """ Remove to new group the write access to workspace.
+
+    Args:
+          workspace
+          group
+          user
+    Returns:
+    """
+    permission_api.remove_permission_to_group(group, workspace.write_perm_id)

@@ -1,23 +1,23 @@
 <table id="table-rights-{{group}}" class="display data-table" style="margin-bottom: 0em; width:100%; border: None">
     <thead>
-        <th>Username</th>
+        <th>{% if group == 'group' %}Name {%else%}Username{% endif %}</th>
         <th>Can read</th>
         <th>Can write</th>
         <th>Actions</th>
     </thead>
     <tbody>
         {% for object in objects %}
-            <tr objectid="{{object.user.id}}">
-                <td>{{ object.user.username }}</td>
+            <tr objectid="{{object.object_id}}">
+                <td>{{ object.object_name }}</td>
                 <td>
                     <label class="switch">
-                        <input id="btn-read" type="checkbox" {% if object.can_read %} checked{% endif %}>
+                        <input id="btn-read-{{group}}-{{object.object_id}}" type="checkbox" {% if object.can_read %} checked{% endif %}>
                         <span class="slider"></span>
                     </label>
                 </td>
                 <td>
                     <label class="switch">
-                        <input id="btn-write" type="checkbox" {% if object.can_write %} checked{% endif %}>
+                        <input id="btn-write-{{group}}-{{object.object_id}}" type="checkbox" {% if object.can_write %} checked{% endif %}>
                         <span class="slider"></span>
                     </label>
                 </td>

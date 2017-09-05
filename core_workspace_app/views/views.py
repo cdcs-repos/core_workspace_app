@@ -3,7 +3,10 @@
 """
 import copy
 
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
+
 from core_main_app.utils.rendering import render
+from core_main_app.commons.exceptions import DoesNotExist
 from core_workspace_app import constants as workspace_constants
 from core_workspace_app.components.workspace import api as workspace_api
 
@@ -18,21 +21,45 @@ def edit_rights(request, workspace_id):
 
     try:
         workspace = workspace_api.get_by_id(workspace_id)
+    except DoesNotExist as e:
+        return HttpResponseBadRequest("The workspace does not exist.")
+    except:
+        return HttpResponseBadRequest("Something wrong happened.")
+
+    if workspace.owner != str(request.user.id):
+        return HttpResponseForbidden("Only the workspace owner can edit the rights.")
+
+    try:
         # Users
-        users_access_workspace = workspace_api.get_list_user_can_access_workspace(workspace, request.user)
+        users_read_workspace = workspace_api.get_list_user_can_read_workspace(workspace, request.user)
+        users_write_workspace = workspace_api.get_list_user_can_write_workspace(workspace, request.user)
+
+        users_access_workspace = list(set(users_read_workspace + users_write_workspace))
         detailed_users = []
         for user in users_access_workspace:
-            detailed_users.append({'user': user,
-                                   'can_read': workspace_api.can_user_read_workspace(workspace, user),
-                                   'can_write': workspace_api.can_user_write_workspace(workspace, user),
-                                   'is_public': workspace_api.is_workspace_public(workspace)
+            detailed_users.append({'object_id': user.id,
+                                   'object_name': user.username,
+                                   'can_read': user in users_read_workspace,
+                                   'can_write': user in users_write_workspace,
                                    })
     except:
         detailed_users = []
-        workspace = None
 
-    # Groups
-    detailed_groups = []
+    try:
+        # Groups
+        groups_read_workspace = workspace_api.get_list_group_can_read_workspace(workspace, request.user)
+        groups_write_workspace = workspace_api.get_list_group_can_write_workspace(workspace, request.user)
+
+        groups_access_workspace = list(set(groups_read_workspace + groups_write_workspace))
+        detailed_groups = []
+        for group in groups_access_workspace:
+            detailed_groups.append({'object_id': group.id,
+                                    'object_name': group.name,
+                                    'can_read': group in groups_read_workspace,
+                                    'can_write': group in groups_write_workspace,
+                                    })
+    except:
+        detailed_groups = []
 
     context = {
         'workspace': workspace,
@@ -40,7 +67,9 @@ def edit_rights(request, workspace_id):
         'group_data': detailed_groups,
         'template': workspace_constants.EDIT_RIGHTS_TEMPLATE_TABLE,
         'action_read': workspace_constants.ACTION_READ,
-        'action_write': workspace_constants.ACTION_WRITE
+        'action_write': workspace_constants.ACTION_WRITE,
+        'user': workspace_constants.USER,
+        'group': workspace_constants.GROUP,
     }
 
     assets = {
@@ -59,10 +88,12 @@ def edit_rights(request, workspace_id):
     assets['js'].extend(copy.deepcopy(workspace_constants.JS_SWITCH_RIGHT))
     assets['js'].extend(copy.deepcopy(workspace_constants.JS_REMOVE_RIGHT))
     assets['css'].extend(copy.deepcopy(workspace_constants.CSS_FORM))
+    assets['js'].extend(copy.deepcopy(workspace_constants.JS_ADD_GROUP))
 
     modals = [workspace_constants.MODAL_ADD_USER,
               workspace_constants.MODAL_SWITCH_RIGHT,
-              workspace_constants.MODAL_REMOVE_RIGHTS]
+              workspace_constants.MODAL_REMOVE_RIGHTS,
+              workspace_constants.MODAL_ADD_GROUP]
 
     return render(request, workspace_constants.EDIT_RIGHTS_TEMPLATE,
                   context=context,

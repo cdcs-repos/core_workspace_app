@@ -2,6 +2,9 @@
     Workspace constants
 """
 
+GROUP = "group"
+USER = "user"
+
 ACTION_READ = "action_read"
 ACTION_WRITE = "action_write"
 
@@ -42,7 +45,7 @@ MODAL_PUBLIC_WORKSPACE_FORM = [
 
 JS_INIT = [{
                 "path": 'core_workspace_app/user/js/init.js',
-                "is_raw": True
+                "is_raw": False
            }]
 
 JS_TABLES = [{
@@ -76,3 +79,14 @@ JS_REMOVE_RIGHT = [{
 
 MODAL_SWITCH_RIGHT = "core_workspace_app/list/modals/switch_right.html"
 MODAL_REMOVE_RIGHTS = "core_workspace_app/list/modals/remove_rights.html"
+
+MODAL_ADD_GROUP = "core_workspace_app/list/modals/add_group.html"
+
+MODAL_ADD_GROUP_FORM = [
+                         "core_workspace_app/list/modals/add_group_form.html"
+                      ]
+
+JS_ADD_GROUP = [{
+                    "path": 'core_workspace_app/user/js/add_group.js',
+                    "is_raw": False
+               }]

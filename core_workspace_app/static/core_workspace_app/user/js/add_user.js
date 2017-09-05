@@ -7,7 +7,7 @@ load_form_add_user = function() {
     $('#add-user-yes').show();
 
     $.ajax({
-        url : editRightFormsUrl,
+        url : editUserRightFormsUrl,
         type : "POST",
         dataType: "json",
         data : {

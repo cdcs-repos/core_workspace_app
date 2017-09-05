@@ -7,6 +7,29 @@ from core_main_app.commons.exceptions import DoesNotExist
 from core_workspace_app.components.workspace import api as workspace_api
 
 
+class GroupRightForm(forms.Form):
+    """
+    Form to select group to add rights.
+    """
+    groups = forms.MultipleChoiceField(label='', required=True,
+                                       widget=forms.SelectMultiple(attrs={'class': 'right-form'}))
+    GROUPS_OPTIONS = []
+
+    def __init__(self, groups_with_no_access):
+        self.GROUPS_OPTIONS = []
+
+        # We sort by name, case sensitive
+        sort_groups = sorted(groups_with_no_access, key=lambda s: s.name.lower())
+
+        # We add them
+        for group in sort_groups:
+            self.GROUPS_OPTIONS.append((group.id, group.name))
+
+        super(GroupRightForm, self).__init__()
+        self.fields['groups'].choices = []
+        self.fields['groups'].choices = self.GROUPS_OPTIONS
+
+
 class UserRightForm(forms.Form):
     """
     Form to select user to add rights.

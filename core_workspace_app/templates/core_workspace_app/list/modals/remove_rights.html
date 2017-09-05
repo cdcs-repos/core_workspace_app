@@ -11,10 +11,11 @@
         <div id="remove_rights_errors"></div>
 </div>
 <input type="hidden" class="remove-rights-id"/>
-<p>Are you sure you want to remove access to the workspace from this user ?</p>
+<input type="hidden" class="remove-rights-group-or-user"/>
+<p>Are you sure you want to remove access to the workspace from this {{group}} ?</p>
 {% endblock %}
 
 {% block modal_footer %}
 <a class="btn btn-default pull-left" data-dismiss="modal" href="#"><i class="fa fa-times"></i> Cancel</a>
-<a id="remove-user-yes" class="btn btn-default" href="#"><i class="fa fa-check"></i> Remove</a>
+<a id="remove-yes" class="btn btn-default" href="#"><i class="fa fa-check"></i> Remove</a>
 {% endblock %}

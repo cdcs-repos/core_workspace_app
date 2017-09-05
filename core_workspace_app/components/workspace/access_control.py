@@ -1,6 +1,7 @@
 """
     Workspace access control
 """
+
 from core_main_app.utils.access_control.exceptions import AccessControlError
 
 

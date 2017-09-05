@@ -81,59 +81,55 @@ def _create_perm(name, content_type, codename):
     return perm
 
 
-def add_permission_to_user(user, permission_id):
+def add_permission_to_user(user, permission):
     """ Add permission to user.
 
     Args:
         user_id
-        permission_id
+        permission
 
     Returns:
     """
-    permission = Permission.objects.get(pk=permission_id)
     user.user_permissions.add(permission)
     user.save()
 
 
-def add_permission_to_group(group_id, permission_id):
+def add_permission_to_group(group, permission):
     """ Add permission to group.
 
     Args:
-        group_id
-        permission_id
+        group
+        permission
 
     Returns:
     """
-    permission = Permission.objects.get(pk=permission_id)
-    group = group_api.get_group_by_id(group_id)
     group.permissions.add(permission)
     group.save()
 
 
-def remove_permission_to_user(user, perm):
+def remove_permission_to_user(user, permission):
     """ Remove permission from user.
 
     Args:
         user
-        perm
+        permission
 
     Returns:
     """
-    user.user_permissions.remove(perm)
+    user.user_permissions.remove(permission)
     user.save()
 
 
-def remove_permission_to_group(group_id, perm):
+def remove_permission_to_group(group, permission):
     """ Remove permission from group.
 
     Args:
-        group_id
-        perm
+        group
+        permission
 
     Returns:
     """
-    group = group_api.get_group_by_id(group_id)
-    group.permissions.remove(perm)
+    group.permissions.remove(permission)
     group.save()
 
 
@@ -230,3 +226,14 @@ def get_permission_label(permission_id):
     """
     permission = Permission.objects.get(pk=permission_id)
     return permission.content_type.app_label + "." + permission.codename
+
+
+def check_if_group_has_perm(group, permission):
+    """ Check if group has permission.
+
+    Args:
+        group:
+        permission:
+    Returns:
+    """
+    return len(group.permissions.filter(id=str(permission.id))) == 1
