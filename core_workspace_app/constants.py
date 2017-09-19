@@ -65,7 +65,6 @@ JS_ADD_USER = [{
                }]
 
 CSS_SWITCH = ['core_workspace_app/user/css/switch.css']
-CSS_FORM = ['core_workspace_app/user/css/right-form.css']
 
 JS_SWITCH_RIGHT = [{
                     "path": 'core_workspace_app/user/js/list/modals/switch_right.js',

@@ -12,7 +12,7 @@ class GroupRightForm(forms.Form):
     Form to select group to add rights.
     """
     groups = forms.MultipleChoiceField(label='', required=True,
-                                       widget=forms.SelectMultiple(attrs={'class': 'right-form'}))
+                                       widget=forms.SelectMultiple())
     GROUPS_OPTIONS = []
 
     def __init__(self, groups_with_no_access):
@@ -34,7 +34,7 @@ class UserRightForm(forms.Form):
     """
     Form to select user to add rights.
     """
-    users = forms.MultipleChoiceField(label='', required=True, widget=forms.SelectMultiple(attrs={'class': 'right-form'}))
+    users = forms.MultipleChoiceField(label='', required=True, widget=forms.SelectMultiple())
     USERS_OPTIONS = []
 
     def __init__(self, users_with_no_access):

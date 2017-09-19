@@ -14,3 +14,14 @@ $(document).ready(function(){
         $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
     }
 });
+
+InitSelectMultipleUsersOrGroups = function(path_elt, place_holder)
+{
+    $(path_elt).fSelect({
+        placeholder: place_holder,
+        numDisplayed: 500,
+        overflowText: '{n} selected',
+        searchText: 'Search',
+        showSearch: true
+    });
+};

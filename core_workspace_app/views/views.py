@@ -73,22 +73,26 @@ def edit_rights(request, workspace_id):
     }
 
     assets = {
-        "css": ['core_main_app/libs/datatables/1.10.13/css/jquery.dataTables.css'],
+        "css": ['core_main_app/libs/datatables/1.10.13/css/jquery.dataTables.css',
+                "core_main_app/libs/fSelect/css/fSelect.css"],
 
         "js": [{
                 "path": 'core_main_app/libs/datatables/1.10.13/js/jquery.dataTables.js',
                 "is_raw": True
+                },
+                {
+                "path": "core_main_app/libs/fSelect/js/fSelect.js",
+                "is_raw": False
                 }]
     }
 
     assets['js'].extend(copy.deepcopy(workspace_constants.JS_TABLES))
-    assets['js'].extend(copy.deepcopy(workspace_constants.JS_INIT))
     assets['js'].extend(copy.deepcopy(workspace_constants.JS_ADD_USER))
     assets['css'].extend(copy.deepcopy(workspace_constants.CSS_SWITCH))
     assets['js'].extend(copy.deepcopy(workspace_constants.JS_SWITCH_RIGHT))
     assets['js'].extend(copy.deepcopy(workspace_constants.JS_REMOVE_RIGHT))
-    assets['css'].extend(copy.deepcopy(workspace_constants.CSS_FORM))
     assets['js'].extend(copy.deepcopy(workspace_constants.JS_ADD_GROUP))
+    assets['js'].extend(copy.deepcopy(workspace_constants.JS_INIT))
 
     modals = [workspace_constants.MODAL_ADD_USER,
               workspace_constants.MODAL_SWITCH_RIGHT,

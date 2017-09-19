@@ -16,6 +16,7 @@ load_form_add_group = function() {
 		success: function(data){
             $("#banner_rights_errors").hide();
             $("#add-group-form").html(data.form);
+            InitSelectMultipleUsersOrGroups("#add-group-form #id_groups", "Groups");
 	    },
         error:function(data){
             $("#form_edit_group_rights_errors").html(data.responseText);

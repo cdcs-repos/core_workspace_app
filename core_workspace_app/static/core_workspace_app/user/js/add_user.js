@@ -16,10 +16,11 @@ load_form_add_user = function() {
 		success: function(data){
             $("#banner_rights_errors").hide();
             $("#add-user-form").html(data.form);
+             InitSelectMultipleUsersOrGroups("#add-user-form #id_users", "Users");
 	    },
         error:function(data){
             $("#form_edit_rights_errors").html(data.responseText);
-            $("#banner_rights_errors").show(500)
+            $("#banner_rights_errors").show(500);
             $('#add-user-yes').hide();
         }
     });
