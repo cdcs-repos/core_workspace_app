@@ -216,8 +216,8 @@ def set_workspace_public(workspace):
 
     Return:
     """
-    permission_api.add_permission_to_group(group_api.get_anonymous_group().id, workspace.read_perm_id)
-    permission_api.add_permission_to_group(group_api.get_default_group().id, workspace.read_perm_id)
+    permission_api.add_permission_to_group(group_api.get_anonymous_group(), workspace.read_perm_id)
+    permission_api.add_permission_to_group(group_api.get_default_group(), workspace.read_perm_id)
 
 
 def can_user_read_workspace(workspace, user):
