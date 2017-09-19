@@ -169,7 +169,7 @@ def add_user_right_to_workspace(request):
 
     if len(users_ids) == 0:
         return HttpResponseBadRequest("You need to select at least one user.")
-    if is_read_checked == 'false' and is_write_checked == 'false':
+    if not is_read_checked and not is_write_checked:
         return HttpResponseBadRequest("You need to select at least one permission (read and/or write).")
 
     try:
