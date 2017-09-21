@@ -5,9 +5,11 @@ import copy
 
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 
-from core_main_app.utils.rendering import render
 from core_main_app.commons.exceptions import DoesNotExist
+from core_main_app.components.group import api as group_api
+from core_main_app.utils.rendering import render
 from core_workspace_app import constants as workspace_constants
+from core_workspace_app.utils import group as group_utils
 from core_workspace_app.components.workspace import api as workspace_api
 
 
@@ -51,6 +53,8 @@ def edit_rights(request, workspace_id):
         groups_write_workspace = workspace_api.get_list_group_can_write_workspace(workspace, request.user)
 
         groups_access_workspace = list(set(groups_read_workspace + groups_write_workspace))
+        group_utils.remove_list_object_from_list(groups_access_workspace,
+                                                 [group_api.get_anonymous_group(), group_api.get_default_group()])
         detailed_groups = []
         for group in groups_access_workspace:
             detailed_groups.append({'object_id': group.id,

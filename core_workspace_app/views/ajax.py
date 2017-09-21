@@ -8,10 +8,11 @@ from django.template import loader
 import core_workspace_app.constants as workspace_constants
 from core_main_app.commons.exceptions import DoesNotExist, NotUniqueError
 from core_main_app.components.data import api as data_api
-from core_main_app.components.user import api as user_api
 from core_main_app.components.group import api as group_api
+from core_main_app.components.user import api as user_api
 from core_main_app.utils.access_control.exceptions import AccessControlError
 from core_workspace_app import constants
+from core_workspace_app.utils import group as group_utils
 from core_workspace_app.components.data import api as data_workspace_api
 from core_workspace_app.components.workspace import api as workspace_api
 from core_workspace_app.forms import ChangeWorkspaceForm, UserRightForm, GroupRightForm
@@ -352,10 +353,8 @@ def load_add_group_form(request):
         # We retrieve all groups with no access
         groups_with_no_access = list(workspace_api.get_list_group_with_no_access_workspace(workspace, request.user))
 
-        # We remove the group default and anonymous
-        groups_with_no_access.remove(group_api.get_anonymous_group())
-        groups_with_no_access.remove(group_api.get_default_group())
-
+        group_utils.remove_list_object_from_list(groups_with_no_access,
+                                                 [group_api.get_anonymous_group(), group_api.get_default_group()])
         if len(groups_with_no_access) == 0:
             return HttpResponseBadRequest("There is no groups that can be added.")
 
