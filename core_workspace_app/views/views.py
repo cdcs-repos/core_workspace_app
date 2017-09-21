@@ -77,12 +77,16 @@ def edit_rights(request, workspace_id):
                 "core_main_app/libs/fSelect/css/fSelect.css"],
 
         "js": [{
-                "path": 'core_main_app/libs/datatables/1.10.13/js/jquery.dataTables.js',
-                "is_raw": True
+                    "path": 'core_main_app/libs/datatables/1.10.13/js/jquery.dataTables.js',
+                    "is_raw": True
                 },
                 {
-                "path": "core_main_app/libs/fSelect/js/fSelect.js",
-                "is_raw": False
+                    "path": "core_main_app/libs/fSelect/js/fSelect.js",
+                    "is_raw": False
+                },
+                {
+                    "path": 'core_main_app/common/js/backtoprevious.js',
+                    "is_raw": True
                 }]
     }
 
